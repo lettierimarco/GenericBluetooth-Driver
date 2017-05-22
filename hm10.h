@@ -20,6 +20,7 @@ class Bluetooth{
 	void setPin(String val);
 	void setPower(uint8_t dbm);
 	bool hasBytes();
+	void notify(byte notify);
 	SoftwareSerial * bleSerial;
 	ModuleType moduleType;
   private:

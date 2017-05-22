@@ -68,6 +68,13 @@ void Bluetooth::displayMainSettings(){
   }
 }
 
+void Bluetooth::notify(byte notify)
+{
+  String command(F("AT+NOTI"));
+  command += notify;
+  doCommandAndEchoResult(command.c_str());
+}
+
 void Bluetooth::setName(String val)
 {
   String command(F("AT+NAME"));
