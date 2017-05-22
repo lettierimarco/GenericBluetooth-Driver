@@ -1,5 +1,5 @@
 #include <hm10.h>
-Bluetooth::Bluetooth(uint8_t rxPin,uint8_t txPin,uint8_t statePin)
+GenericBluetooth::GenericBluetooth(uint8_t rxPin,uint8_t txPin,uint8_t statePin)
 {
   bleSerial = new SoftwareSerial(rxPin, txPin);
   bleSerial->begin(BLE_BAUD);
@@ -10,7 +10,7 @@ Bluetooth::Bluetooth(uint8_t rxPin,uint8_t txPin,uint8_t statePin)
   moduleType = identifyDevice();
 }
 
-bool Bluetooth::determineConnectionState(){
+bool GenericBluetooth::determineConnectionState(){
     int state = digitalRead(statePin);
     unsigned long p1 = pulseIn(statePin, HIGH, 2000000);
     unsigned long p2 = pulseIn(statePin, LOW, 2000000);
@@ -33,7 +33,7 @@ bool Bluetooth::determineConnectionState(){
 }
 
 
-void Bluetooth::displayMainSettings(){
+void GenericBluetooth::displayMainSettings(){
   if (moduleType == HM10)
   {
     doCommandAndEchoResult(("AT+HELP?"));
@@ -68,35 +68,35 @@ void Bluetooth::displayMainSettings(){
   }
 }
 
-void Bluetooth::notify(byte notify)
+void GenericBluetooth::notify(byte notify)
 {
   String command(F("AT+NOTI"));
   command += notify;
   doCommandAndEchoResult(command.c_str());
 }
 
-void Bluetooth::setName(String val)
+void GenericBluetooth::setName(String val)
 {
   String command(F("AT+NAME"));
   command += val;
   doCommandAndEchoResult(command.c_str());
 }
 
-void Bluetooth::setPin(String val)
+void GenericBluetooth::setPin(String val)
 {
   String command(F("AT+PASS"));
   command += val;
   doCommandAndEchoResult(command.c_str());
 }
 
-void Bluetooth::setPower(uint8_t dbm)
+void GenericBluetooth::setPower(uint8_t dbm)
 {
   //int dbm = readInt(F("Enter new module power (0 = -23dbm, 1 = -6dbm, 2 = 0dbm, 3 = 6dbm)"), 2); // 2 is the default
   String command(F("AT+POWE"));
   command += dbm;
   doCommandAndEchoResult(command.c_str());
 }
-void Bluetooth::doCommandAndEchoResult(const char * command, const __FlashStringHelper * meaning = NULL)
+void GenericBluetooth::doCommandAndEchoResult(const char * command, const __FlashStringHelper * meaning = NULL)
 {
   if(moduleType!=Unknown){
 
@@ -121,7 +121,7 @@ void Bluetooth::doCommandAndEchoResult(const char * command, const __FlashString
 
 }
 
-ModuleType Bluetooth::identifyDevice()
+ModuleType GenericBluetooth::identifyDevice()
 {
   //Serial.println(F("Detecting module type"));
   // check for HM-10

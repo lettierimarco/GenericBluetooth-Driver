@@ -9,9 +9,9 @@ enum ModuleType { HM10, CC41, MLT_BT05, Unknown };
 #define BLE_BAUD 9600
 #define BLE_TIMEOUT 250
 
-class Bluetooth{
+class GenericBluetooth{
   public:
-	Bluetooth(uint8_t rxPin, uint8_t txPin, uint8_t statePin);
+	GenericBluetooth(uint8_t rxPin, uint8_t txPin, uint8_t statePin);
     ModuleType identifyDevice();
 	void doCommandAndEchoResult(const char * command, const __FlashStringHelper * meaning = NULL);
 	bool determineConnectionState();
