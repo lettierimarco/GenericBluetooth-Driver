@@ -1,4 +1,4 @@
-#include <hm10.h>
+#include <genericBluetooth.h>
 GenericBluetooth::GenericBluetooth(uint8_t rxPin,uint8_t txPin,uint8_t statePin)
 {
   bleSerial = new SoftwareSerial(rxPin, txPin);
@@ -7,7 +7,11 @@ GenericBluetooth::GenericBluetooth(uint8_t rxPin,uint8_t txPin,uint8_t statePin)
   rxPin = rxPin;
   txPin= txPin;
   pinMode(statePin, INPUT);
-  moduleType = identifyDevice();
+}
+
+GenericBluetooth::~GenericBluetooth()
+{
+
 }
 
 bool GenericBluetooth::determineConnectionState(){
@@ -109,13 +113,13 @@ void GenericBluetooth::doCommandAndEchoResult(const char * command, const __Flas
   
     // read and return response
     // don't use "readString", it can't handle long and slow responses (such as AT+HELP) well
-    //byte b;
-    //while (bleSerial->readBytes(&b, 1) == 1) // use "readBytes" and not "read" due to the timeout support
-    //  Serial.write(b);
+    byte b;
+    while (bleSerial->readBytes(&b, 1) == 1) // use "readBytes" and not "read" due to the timeout support
+      Serial.write(b);
   
     // normalize line end
-    //if (moduleType == HM10)
-    //  Serial.println();
+   if (moduleType == HM10)
+      Serial.println();
   } else 
     moduleType=identifyDevice();
 
@@ -129,7 +133,7 @@ ModuleType GenericBluetooth::identifyDevice()
   String s = bleSerial->readString();
   if (s.length() == 2 && s.compareTo("OK")==0)
   {
-    //Serial.println(F("HM-10 detected!"));
+    Serial.println(F("HM-10 detected!"));
     return HM10;
   }
   else if (s.length() == 0)
@@ -139,7 +143,7 @@ ModuleType GenericBluetooth::identifyDevice()
     s = bleSerial->readString();
     if (s.length() == 4 && s.compareTo("OK\r\n") == 0)
     {
-      //Serial.println(F("CC41 detected!")); // An HM-10 clone
+      Serial.println(F("CC41 detected!")); // An HM-10 clone
       return CC41;
     }
     else if (s.length() == 0)
@@ -149,7 +153,7 @@ ModuleType GenericBluetooth::identifyDevice()
       s = bleSerial->readString();
       if (s.length() == 4 && s.compareTo("OK\r\n") == 0)
       {
-       // Serial.println(F("MLT-BT05 detected!")); // An HM-10 clone
+        Serial.println(F("MLT-BT05 detected!")); // An HM-10 clone
         return MLT_BT05;
       }
       else if (s.length() == 0)
